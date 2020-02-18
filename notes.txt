@@ -1,0 +1,37 @@
+To-Do:
+- Putting instructions somewhere about right clicking ???
+- quick search page
+- About page
+
+Come back to:
+-Single movie page
+	-layout + more info
+	-"loading" status to prevent button double clicks
+
+-onBottom on collection page double firing
+-maintaining login state on refresh ??
+
+
+
+Menu:
+
+Dashboard/Home
+Search
+Want to Watch List
+Seen Movies List
+About
+
+
+budget?, imdb link, release date
+
+
+improvements:
+-useContext --> useTMDB --> { api_key, baseURL, config, etc }
+-rating system for seen movies
+
+Missing:
+some error proofing
+
+
+
+
