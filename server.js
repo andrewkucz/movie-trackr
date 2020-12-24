@@ -33,8 +33,8 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 
-const userRoutes = require('./backend/routes/user.routes');
-app.use('/api/v1/users', userRoutes);
+const {login} = require('./user.controller');
+app.put('/api/v1/login', login);
 
 
 app.get("*", (req, res) => {
