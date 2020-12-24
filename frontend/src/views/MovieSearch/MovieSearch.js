@@ -129,7 +129,7 @@ const MovieSearch = () => {
   //config
   useEffect(() => {
     console.log('Getting config...');
-    axios.get('https://api.themoviedb.org/3/configuration?api_key=bc8272eb5e701f448b839848bc8cce25').then(response => {
+    axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       setConfig({
         base_url: response.data.images.base_url + response.data.images.poster_sizes[0]
       });
