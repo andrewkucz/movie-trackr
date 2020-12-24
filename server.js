@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 
-const {login} = require('./user.controller');
+const {login} = require('./user');
 app.put('/api/v1/login', login);
 
 
