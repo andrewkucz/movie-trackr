@@ -66,9 +66,12 @@ const SingleMovie = () => {
   useEffect(() => {
     if(user && id)
     {
-      let url = `/api/v1/collectionitems/watched?user=${user.sub}&movies=${id}}`
+      let url = `https://movieapp.prestoapi.com/api/singleitem?tmdb_id=${id}&user=${user.sub}`
       axios.get(url).then(response => {
-        setList(response.data[id]);
+        if(response.data && response.data.length)
+        {
+          setList(response.data[0].list)
+        }
       }).catch(err => {
         console.log(err);
       })
@@ -111,7 +114,6 @@ const SingleMovie = () => {
   };
 
   const getImage = () => {
-    console.log(movie);
     return (config.base_url && movie.poster_path) ? config.base_url + movie.poster_path : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
   };
 
@@ -165,17 +167,16 @@ const SingleMovie = () => {
       console.log(`Adding ${movie.title} to ${l} list`);
       let collectionObj = getCollectionItem(l);
 
-      let url = listNeedsToBeUpdated ? '/api/v1/collectionitems/updatelist' : '/api/v1/collectionitems';
+      let url = 'https://movieapp.prestoapi.com/api/collectionitems' + (listNeedsToBeUpdated ? `/${id}` : '')
+    
+      let method = listNeedsToBeUpdated ? 'put' : 'post'
 
-      console.log(collectionObj);
-
-      axios.post(url,collectionObj).then(response => {
-        console.log(response);
-        //setPopuseverity: 'success', open: true, message: `Added "${collectionObj.title}" to your ${list} list`});
-        setList(l);
+      axios[method](url,collectionObj).then(response => {
+        setPopup({severity: 'success', open: true, message: `Added "${collectionObj.title}" to your ${list} list`});
+        setList(list)
       }).catch(err => {
         console.log(err);
-        //setPopup({severity: 'warning', open: true, message: `Error adding movie to your ${list} list`});
+        setPopup({severity: 'warning', open: true, message: `Error adding movie to your ${list} list`});
       });
     
 

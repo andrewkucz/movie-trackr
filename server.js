@@ -33,9 +33,6 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 
-const collectionItemRoutes = require('./backend/routes/collectionitem.routes');
-app.use('/api/v1/collectionitems', collectionItemRoutes);
-
 const userRoutes = require('./backend/routes/user.routes');
 app.use('/api/v1/users', userRoutes);
 

@@ -84,22 +84,14 @@ const MovieList = () => {
   const classes = useStyles();
   const [movies, setMovies] = useState([]);
   const [config, setConfig] = useState({});
-  const [page, setPage] = useState(0);
 
 
   const { user } = useAuth0();
   const { list } = useParams();
 
-  const [popup, setPopup] = useState({
-    open: false,
-    severity: '',
-    message: ''
-  });
-
-
   //config
   useEffect(() => {
-    console.log('Getting config...');
+    //console.log('Getting config...');
     axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       setConfig({
         base_url: response.data.images.base_url + response.data.images.poster_sizes[0]
@@ -160,18 +152,34 @@ const MovieList = () => {
     pageSizeOptions: []
   };
 
+
   const markSeen = (movie) => {
 
-    let url = '/api/v1/collectionitems/updatelist';
 
-    axios.post(url,{...movie, list: 'seen'}).then(response => {
-      console.log(response);
-      const data = [...movies];
-      data.splice(data.indexOf(movie), 1);
-      setMovies(data);
-    }).catch(err => {
-      console.log(err);
-    })
+    //https://movieapp.prestoapi.com/api/collectionitems/5fe4bc0e0ed2161710a5658d
+    let url = 'https://movieapp.prestoapi.com/api/collectionitems/' + movie._id
+
+    console.log(url, movie)
+
+    const obj = {
+      list: 'seen',
+      poster: movie.poster,
+      title: movie.title,
+      tmdb_id: movie.tmdb_id,
+      user: movie.user
+    }
+   
+      axios.put(url,obj).then(response => {
+        setMovies(m => {
+          let data = [...m]
+          data.splice(m.findIndex(m => m._id === movie._id), 1)
+          return data
+        })
+
+      }).catch(err => {
+        console.log(err);
+      });
+
   }
 
 
@@ -180,7 +188,7 @@ const MovieList = () => {
       tooltip: 'Mark as Seen',
       icon: VisibilityIcon,
       onClick: (ev,row) => markSeen(row)
-    }] : [];
+  }] : [];
 
 
   let editable = {
@@ -188,7 +196,7 @@ const MovieList = () => {
       new Promise((resolve, reject) => {
         let id = oldData._id;
         console.log('deleting', id);
-        axios.delete('/api/v1/collectionitems/id/'+id).then(response => {
+        axios.delete('https://movieapp.prestoapi.com/api/collectionitems/'+id).then(response => {
           const data = [...movies];
           data.splice(data.indexOf(oldData), 1);
           setMovies(data);

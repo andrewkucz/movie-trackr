@@ -35,14 +35,18 @@ const Dashboard = () => {
     message: ''
   });
 
+  const [ready, setReady] = useState(false)
+  const [userList, setUserList] = useState({})
+  const [movieIDs, setMovieIDs] = useState({})
+
   const numMovies = 6;
 
   useEffect(() => {
     axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
-      console.log(response);
+      //console.log(response);
       let len = response.data.images.poster_sizes.length;
       let base = response.data.images.base_url + response.data.images.poster_sizes[len-4];
-      console.log(base);
+      //console.log(base);
       setConfig({
         base_url: base
       });
@@ -50,14 +54,43 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    categories.forEach(c => {
+    const p = categories.map(c => {
       let s = slug(c);
-      axios.get(`https://api.themoviedb.org/3/movie/${s}?api_key=${api_key}&language=en-US&page=1`).then(response => {
-        console.log(c, response);
+      return axios.get(`https://api.themoviedb.org/3/movie/${s}?api_key=${api_key}&language=en-US&page=1`).then(response => {
+        //console.log(c, response);
         setMovies(m => {return {...m, [c]: response.data.results.slice(0,numMovies)}});
       });
     });
+
+    Promise.all(p).then(res => {
+      setReady(true)
+    }).catch(err => {
+      console.log(err)
+    })
+
   }, []);
+
+
+  useEffect(() => {
+    if(!ready || !user) return
+
+    axios.get('https://movieapp.prestoapi.com/api/allitems?user='+user.sub).then(res => {
+
+    const obj = res.data.reduce((acc,val) => {
+      acc[val.tmdb_id] = val.list
+      return acc
+    }, {})
+
+    setUserList(obj)
+
+    setMovieIDs(res.data.reduce((acc,val) => {
+      acc[val.tmdb_id] = val._id
+      return acc
+    }, {}))
+
+    }).catch(err => console.log(err))
+
+  },[ready, user])
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -72,7 +105,7 @@ const Dashboard = () => {
       <Grid container spacing={4}>
         <Grid item xs={12} >
           {
-            categories.map(c => <MovieSlider key={c} config={config} slug={slug(c)} title={c} movies={movies[c]} user={user} setPopup={setPopup}/>)
+            categories.map(c => <MovieSlider key={c} config={config} slug={slug(c)} title={c} movies={movies[c]} user={user} userList={userList} setUserList={setUserList} movieIDs={movieIDs} setPopup={setPopup}/>)
           }
         </Grid>
       </Grid>

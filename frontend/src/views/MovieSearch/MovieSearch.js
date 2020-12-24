@@ -105,26 +105,12 @@ const MovieSearch = () => {
     message: ''
   });
 
-  const [userList, setUserList] = useState({});
+  //const [userList, setUserList] = useState({});
 
-  useEffect(() => {
-    if(user && movies && movies.length)
-    {
-      let ids = movies.map(m=>m.id);
-      let url = `/api/v1/collectionitems/watched?user=${user.sub}&movies=${ids.join(',')}`
-      axios.get(url).then(response => {
-        setUserList(response.data);
-        console.log(response.data);
-      }).catch(err => {
-        console.log(err);
-      })
-    }
-  }, [user, movies])
-
-  const addToUserList = (id, list) => {
-    console.log('adding to list: ' + list);
-    setUserList({...userList, [id]: list})
-  }
+  // const addToUserList = (id, list) => {
+  //   console.log('adding to list: ' + list);
+  //   setUserList({...userList, [id]: list})
+  // }
 
   //config
   useEffect(() => {

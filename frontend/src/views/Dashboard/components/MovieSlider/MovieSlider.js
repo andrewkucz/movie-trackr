@@ -34,26 +34,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const MovieSlider = props => {
-  const { movies, title, config, user, setPopup } = props;
+  const { movies, title, config, user, setPopup, userList, setUserList, movieIDs } = props;
   const classes = useStyles();
-
-  const [userList, setUserList] = useState({});
-
-  useEffect(() => {
-    if(user && movies)
-    {
-      let ids = movies.map(m=>m.id);
-      let url = `/api/v1/collectionitems/watched?user=${user.sub}&movies=${ids.join(',')}`
-      axios.get(url).then(response => {
-        setUserList(response.data);
-        console.log(response.data);
-      }).catch(err => {
-
-        console.log(err);
-      })
-      
-    }
-  }, [user, movies])
 
   const addToUserList = (id, list) => {
     console.log('adding to list: ' + list);
@@ -71,8 +53,8 @@ const MovieSlider = props => {
     </Typography>
     <Grid container justify="center" spacing={2}>
       {(movies || []).map(movie => (
-        <Grid key={movie.id} item xs={4} sm={2}>
-          <MovieCard movie={movie} base_url={config.base_url} userID={user ? user.sub : null} list={userList[movie.id]} addToUserList={addToUserList} setPopup={setPopup}/>
+        <Grid key={movie.id} item xs={6} sm={4}>
+          <MovieCard movie={movie} base_url={config.base_url} userID={user ? user.sub : null} list={userList[movie.id]} id={movieIDs[movie.id]} addToUserList={addToUserList} setPopup={setPopup}/>
         </Grid>
       ))}
     </Grid>

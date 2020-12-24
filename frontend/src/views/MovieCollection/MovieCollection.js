@@ -55,6 +55,8 @@ const MovieCollection = () => {
   const { slug } = useParams();
   const [category, setCategory] = useState('');
 
+  const [movieIDs, setMovieIDs] = useState({})
+
   const [popup, setPopup] = useState({
     open: false,
     severity: '',
@@ -67,7 +69,7 @@ const MovieCollection = () => {
   }
 
   useEffect(() => {
-    console.log('Getting config...');
+    //console.log('Getting config...');
     axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       let len = response.data.images.poster_sizes.length;
       setConfig({
@@ -87,10 +89,10 @@ const MovieCollection = () => {
 
     if(!category) return;
 
-    console.log('getting page: ' + (page+1) + ' cat: ' + category);
+    //console.log('getting page: ' + (page+1) + ' cat: ' + category);
 
     axios.get(`https://api.themoviedb.org/3/movie/${category}?api_key=${api_key}&language=en-US&page=${page+1}`).then(response => {
-      console.log(response);
+      //console.log(response);
       setLoading(false);
       if(page===0 && movies.length)
       {
@@ -107,20 +109,26 @@ const MovieCollection = () => {
   }, [page, category]);
 
   useEffect(() => {
-    if(user && movies && movies.length)
-    {
-      let ids = movies.map(m=>m.id);
-      let url = `/api/v1/collectionitems/watched?user=${user.sub}&movies=${ids.join(',')}`
-      axios.get(url).then(response => {
-        setUserList(response.data);
-        console.log(response.data);
-      }).catch(err => {
+    if(!user || !movies || !movies.length) return
 
-        console.log(err);
-      })
-      
-    }
-  }, [movies, user])
+    axios.get('https://movieapp.prestoapi.com/api/allitems?user='+user.sub).then(res => {
+
+    const obj = res.data.reduce((acc,val) => {
+      acc[val.tmdb_id] = val.list
+      return acc
+    }, {})
+
+    setUserList(obj)
+
+    setMovieIDs(res.data.reduce((acc,val) => {
+      acc[val.tmdb_id] = val._id
+      return acc
+    }, {}))
+
+    }).catch(err => console.log(err))
+
+  },[movies.length, user])
+
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -148,9 +156,8 @@ const MovieCollection = () => {
       <Grid container spacing={4}>
 
         
-        {movies.map(m=>
-        <Grid key={m.id} item xs={2} className={classes.card}>
-          <MovieCard movie={m} base_url={config.base_url} userID={user ? user.sub : null} list={userList[m.id]} addToUserList={addToUserList} setPopup={setPopup}/>
+        {movies.map(m => <Grid key={m.id} item xs={6} sm={4} className={classes.card}>
+          <MovieCard movie={m} base_url={config.base_url} userID={user ? user.sub : null} list={userList[m.id]} id={movieIDs[m.id]} addToUserList={addToUserList} setPopup={setPopup}/>
         </Grid>
         )}
 

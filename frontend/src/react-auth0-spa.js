@@ -65,7 +65,7 @@ export const Auth0Provider = ({
     {
       console.log(`User: ${user.name || 'Error'}`);
 
-      axios.put('/api/v1/users/login',user).then(response => {
+      axios.put('/api/v1/users/login', user).then(response => {
         console.log('Login logged successfully');
         //console.log(response);
       }).catch(err => {

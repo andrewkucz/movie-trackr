@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const MovieCard = props => {
-  const { movie, base_url, userID, list, addToUserList, setPopup} = props;
+  const { movie, base_url, userID, list, addToUserList, setPopup, id } = props;
   const classes = useStyles();
 
   const [mouse, setMouse] = useState({X: null, Y: null});
@@ -66,9 +66,6 @@ const MovieCard = props => {
       poster: movie.poster_path || '',
       list: list
     };
-
-
-
   }
 
   const addToList = (list) => {
@@ -95,10 +92,13 @@ const MovieCard = props => {
       console.log(`Adding ${movie.title} to ${list} list`);
       let collectionObj = getCollectionItem(movie,list);
 
-      let url = listNeedsToBeUpdated ? '/api/v1/collectionitems/updatelist' : '/api/v1/collectionitems';
-      
-      axios.post(url,collectionObj).then(response => {
-        console.log(response);
+      console.log(collectionObj)
+
+      let url = 'https://movieapp.prestoapi.com/api/collectionitems' + (listNeedsToBeUpdated ? `/${id}` : '')
+    
+      let method = listNeedsToBeUpdated ? 'put' : 'post'
+
+      axios[method](url,collectionObj).then(response => {
         setPopup({severity: 'success', open: true, message: `Added "${collectionObj.title}" to your ${list} list`});
         addToUserList(collectionObj.tmdb_id,list);
       }).catch(err => {
