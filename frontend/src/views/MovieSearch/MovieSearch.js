@@ -5,7 +5,7 @@ import {  Paper, Typography, Grid } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 
 import { useAuth0 } from "../../react-auth0-spa";
-import { api_key } from "../../tmdb_config.json";
+import { api_key } from "../../tmdb_config";
 
 
 import history from "../../utils/history";

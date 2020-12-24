@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid, Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import { api_key } from "../../tmdb_config.json";
+import { api_key } from "../../tmdb_config";
 import { useAuth0 } from "../../react-auth0-spa";
 
 import axios from 'axios';
@@ -38,7 +38,7 @@ const Dashboard = () => {
   const numMovies = 6;
 
   useEffect(() => {
-    axios.get('https://api.themoviedb.org/3/configuration?api_key=bc8272eb5e701f448b839848bc8cce25').then(response => {
+    axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       console.log(response);
       let len = response.data.images.poster_sizes.length;
       let base = response.data.images.base_url + response.data.images.poster_sizes[len-4];

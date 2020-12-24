@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth0 } from "../../react-auth0-spa";
 
 
+import { api_key } from '../../tmdb_config'
 import history from "../../utils/history";
 
 import axios from 'axios';
@@ -99,7 +100,7 @@ const MovieList = () => {
   //config
   useEffect(() => {
     console.log('Getting config...');
-    axios.get('https://api.themoviedb.org/3/configuration?api_key=bc8272eb5e701f448b839848bc8cce25').then(response => {
+    axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       setConfig({
         base_url: response.data.images.base_url + response.data.images.poster_sizes[0]
       });
@@ -116,12 +117,10 @@ const MovieList = () => {
 
     if(user)
     {
-      let url = `/api/v1/collectionitems?user=${user.sub}&list=${list}`
+      let url = `https://movieapp.prestoapi.com/api/collectionitems?list=${list}&user=${user.sub}`
+  
       axios.get(url).then(response => {
-        
         setMovies(response.data);
-        console.log(response);
-
       }).catch(err => {
         console.log(err);
       })
@@ -137,7 +136,6 @@ const MovieList = () => {
   const title = list ? `${list.charAt(0).toUpperCase() + list.slice(1)} List` : 'Error';
 
   const renderImg = rowData => {
-    // console.log(rowData)
     return <img src={getImage(rowData)} alt={rowData.title + 'Poster'} />
   };
 

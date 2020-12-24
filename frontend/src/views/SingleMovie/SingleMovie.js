@@ -6,7 +6,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { api_key } from "../../tmdb_config.json";
+import { api_key } from "../../tmdb_config";
 import { useAuth0 } from "../../react-auth0-spa";
 
 import axios from 'axios';

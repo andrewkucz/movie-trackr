@@ -22,4 +22,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /frontend/src/auth_config.json
-/frontend/src/tmdb_config.json
+/frontend/src/tmdb_config.js

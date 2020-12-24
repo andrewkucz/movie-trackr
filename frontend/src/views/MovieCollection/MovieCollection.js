@@ -5,7 +5,7 @@ import { Grid, Snackbar, Paper, Typography, CircularProgress } from '@material-u
 import MuiAlert from '@material-ui/lab/Alert';
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 
-import { api_key } from "../../tmdb_config.json";
+import { api_key } from "../../tmdb_config";
 import { useAuth0 } from "../../react-auth0-spa";
 
 import MovieCard from '../../components/MovieCard';
@@ -68,7 +68,7 @@ const MovieCollection = () => {
 
   useEffect(() => {
     console.log('Getting config...');
-    axios.get('https://api.themoviedb.org/3/configuration?api_key=bc8272eb5e701f448b839848bc8cce25').then(response => {
+    axios.get('https://api.themoviedb.org/3/configuration?api_key='+api_key).then(response => {
       let len = response.data.images.poster_sizes.length;
       setConfig({
         base_url: response.data.images.base_url + response.data.images.poster_sizes[len-1]
